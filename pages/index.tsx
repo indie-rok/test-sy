@@ -47,7 +47,7 @@ function Home() {
       );
     }
 
-    return <Table />;
+    return <Table rows={rows} />;
   };
 
   useEffect(() => {
