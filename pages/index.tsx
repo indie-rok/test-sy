@@ -13,10 +13,11 @@ import {
 import { fetchProfit } from "../utils/api";
 import TableReport from "../components/Table";
 import Header from "../components/Header";
+import { RowEntity } from "../entities/Row";
 
 function Home() {
   const [bankFee, setBankFee] = useState<string>("2.9");
-  const [rows, setRows] = useState<Row[]>([]);
+  const [rows, setRows] = useState<RowEntity[]>([]);
   const [loading, setLoading] = useState<boolean>(null);
   const [error, setError] = useState<boolean>(null);
 

@@ -1,13 +1,13 @@
 import React from "react";
 import { Table as RBTable } from "react-bootstrap";
 
-import { Row } from "../../entities/Row";
+import { RowEntity } from "../../entities/Row";
 
 export interface TableProps {
-  rows: Row[];
+  rows: RowEntity[];
 }
 
-const renderRow = ({ range, items, average }: Row) => (
+const renderRow = ({ range, items, average }: RowEntity) => (
   <tr>
     <td>
       {"<"} {range} $
@@ -17,7 +17,7 @@ const renderRow = ({ range, items, average }: Row) => (
   </tr>
 );
 
-export default function TableReport({ rows }: { rows: Row[] }) {
+export default function TableReport({ rows }: { rows: RowEntity[] }) {
   return (
     <>
       <RBTable striped bordered hover>
