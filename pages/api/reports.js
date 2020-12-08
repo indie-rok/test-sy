@@ -45,7 +45,7 @@ export default async (req, res) => {
       results.push({
         range: index * 20 + 20,
         items: groupedTickets.length,
-        average,
+        average: average.toFixed(4),
       });
     });
 

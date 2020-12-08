@@ -9,13 +9,15 @@ export interface TableProps {
 
 const renderRow = ({ range, items, average }: Row) => (
   <tr>
-    <td>{range}</td>
+    <td>
+      {"<"} {range} $
+    </td>
     <td>{items}</td>
-    <td>{average}</td>
+    <td>{average} %</td>
   </tr>
 );
 
-export default function Table({ rows }: { rows: Row[] }) {
+export default function TableReport({ rows }: { rows: Row[] }) {
   return (
     <>
       <RBTable striped bordered hover>
