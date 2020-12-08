@@ -1,18 +1,23 @@
 import { useState } from "react";
-import Table from "../components/Table/index.tsx";
+import { InferGetStaticPropsType } from "next";
+
+import { serverUrl } from "../config";
+import { Row as RowInterface } from "../entities/Row";
+import Table from "../components/Table";
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
 import { Container, Row, Col, Button, Form } from "react-bootstrap";
 
-export default function Home() {
+function Home({ rows }: InferGetStaticPropsType<typeof getStaticProps>) {
   const [bankFee, setBankFee] = useState("2.9");
+
+  console.log(rows);
 
   const getProfit = () => {
     console.log(bankFee);
   };
 
   return (
-    <div className={styles.container}>
+    <>
       <Head>
         <title>Profit calculator</title>
         <link rel="icon" href="/favicon.ico" />
@@ -55,6 +60,19 @@ export default function Home() {
           </Col>
         </Row>
       </Container>
-    </div>
+    </>
   );
 }
+
+export const getStaticProps = async () => {
+  const res = await fetch(`${serverUrl}/reports`);
+  const rows: RowInterface[] = await res.json();
+
+  return {
+    props: {
+      rows,
+    },
+  };
+};
+
+export default Home;
