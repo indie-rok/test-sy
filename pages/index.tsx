@@ -1,20 +1,62 @@
-import { useState } from "react";
-import { InferGetStaticPropsType } from "next";
+import { useState, useEffect } from "react";
 
 import { serverUrl } from "../config";
 import { Row as RowInterface } from "../entities/Row";
 import Table from "../components/Table";
 import Head from "next/head";
-import { Container, Row, Col, Button, Form } from "react-bootstrap";
+import { Container, Row, Col, Button, Form, Alert } from "react-bootstrap";
 
-function Home({ rows }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const [bankFee, setBankFee] = useState("2.9");
+function Home() {
+  const [bankFee, setBankFee] = useState<string>("2.9");
+  const [rows, setRows] = useState<Row[]>([]);
+  const [loading, setLoading] = useState<boolean>(null);
+  const [error, setError] = useState<boolean>(null);
 
-  console.log(rows);
-
-  const getProfit = () => {
-    console.log(bankFee);
+  const fetchProfit = async (bankFee) => {
+    try {
+      const res = await fetch(`${serverUrl}/reports?bank_fee=${bankFee}`);
+      const rows = await res.json();
+      return rows;
+    } catch (err) {
+      throw err;
+    }
   };
+
+  const getReport = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      setRows(await fetchProfit(bankFee));
+    } catch (err) {
+      setError(err.toString());
+    }
+
+    setLoading(false);
+  };
+
+  const renderTable = () => {
+    if (loading) {
+      return <p>Loading...</p>;
+    }
+    if (error) {
+      return (
+        <Alert key="error" variant="danger">
+          Error while getting the data {error}
+        </Alert>
+      );
+    }
+
+    return <Table />;
+  };
+
+  useEffect(() => {
+    const fetchReport = async () => {
+      await getReport();
+    };
+
+    fetchReport();
+  }, []);
 
   return (
     <>
@@ -50,29 +92,16 @@ function Home({ rows }: InferGetStaticPropsType<typeof getStaticProps>) {
           </Col>
 
           <Col>
-            <Button onClick={getProfit}>Get profit</Button>
+            <Button onClick={getReport}>Get profit</Button>
           </Col>
         </Row>
 
         <Row>
-          <Col>
-            <Table />
-          </Col>
+          <Col className="mt-3">{renderTable()}</Col>
         </Row>
       </Container>
     </>
   );
 }
-
-export const getStaticProps = async () => {
-  const res = await fetch(`${serverUrl}/reports`);
-  const rows: RowInterface[] = await res.json();
-
-  return {
-    props: {
-      rows,
-    },
-  };
-};
 
 export default Home;
